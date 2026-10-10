@@ -25,8 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(import.meta.dirname, "../public")));
 
 // Rotas de API
-app.use("/api", apiRouter);
 app.use("/api", produtoRouter);
+app.use("/api", apiRouter);
 
 // Páginas EJS
 app.get("/", (req, res) => res.redirect("/home"));
