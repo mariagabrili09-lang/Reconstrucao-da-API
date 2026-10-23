@@ -28,6 +28,7 @@ app.use(express.static(path.join(import.meta.dirname, "../public")));
 app.use("/api", produtoRouter);
 app.use("/api", apiRouter);
 
+
 // Páginas EJS
 app.get("/", (req, res) => res.redirect("/home"));
 

@@ -1,5 +1,78 @@
-<h1 class="mb-4">Produtos</h1>
-<div id="mensagem"></div>
+<div class="products-header">
+  <div>
+    <h1 class="mb-2">Produtos</h1>
+    <p class="text-secondary">Gerencie os produtos da Esporte Mais.</p>
+  </div>
+  <button type="button" class="btn btn-primary" id="btn-adicionar">
+    + Adicionar produto
+  </button>
+</div>
+<div id="mensagem" role="status" aria-live="polite"></div>
+<section id="formulario-area" class="card shadow-sm mb-4" hidden>
+  <div class="card-body">
+    <h2 id="formulario-titulo" class="h4 mb-4">Adicionar produto</h2>
+    <form id="form-produto">
+      <input type="hidden" id="produto-id" />
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="nome" class="form-label">Nome do produto</label>
+          <input
+            type="text"
+            id="nome"
+            class="form-control"
+            required
+            maxlength="150"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="preco" class="form-label">Preço (R$)</label>
+          <input
+            type="number"
+            id="preco"
+            class="form-control"
+            required
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="estoque" class="form-label">Estoque</label>
+          <input
+            type="number"
+            id="estoque"
+            class="form-control"
+            required
+            min="0"
+            step="1"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="id_categoria" class="form-label">Categoria</label>
+          <select id="id_categoria" class="form-select" required>
+            <option value="">Carregando categorias...</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="id_fornecedor" class="form-label">Fornecedor</label>
+          <select id="id_fornecedor" class="form-select" required>
+            <option value="">Carregando fornecedores...</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary" id="btn-salvar">
+          Salvar produto
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          id="btn-cancelar"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
 <div id="container-produtos" class="row g-4"></div>
-
 <script src="/scripts/products.js"></script>
