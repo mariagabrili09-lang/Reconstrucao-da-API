@@ -91,24 +91,45 @@ VALUES ('Beatriz Costa', '77777777777', '88999990007');
 -- VENDAS
 
 INSERT INTO venda
-(data, valor_total, id_cliente, id_funcionario, id_produto, id_loja)
+(data, valor_total, id_cliente, id_funcionario, id_loja)
 VALUES
-('2026-09-18', 299.90, 1, 1, 1, 1);
+('2026-09-18', 299.90, 1, 1, 1);
 
 INSERT INTO venda
-(data, valor_total, id_cliente, id_funcionario, id_produto, id_loja)
+(data, valor_total, id_cliente, id_funcionario, id_loja)
 VALUES
-('2026-09-18', 179.90, 2, 1, 2, 2);
+('2026-09-18', 179.90, 2, 1, 2);
 
 INSERT INTO venda
-(data, valor_total, id_cliente, id_funcionario, id_produto, id_loja)
+(data, valor_total, id_cliente, id_funcionario, id_loja)
 VALUES
-('2026-09-19', 129.90, 3, 2, 3, 2);
+('2026-09-19', 129.90, 3, 2, 2);
 
 INSERT INTO venda
-(data, valor_total, id_cliente, id_funcionario, id_produto, id_loja)
+(data, valor_total, id_cliente, id_funcionario, id_loja)
 VALUES
-('2026-09-19', 399.90, 4, 2, 4, 1);
+('2026-09-19', 399.90, 4, 2, 1);
+
+-- ITENS DAS VENDAS
+
+INSERT INTO item_venda
+(id_venda, id_produto, quantidade, preco_unitario)
+VALUES
+(1, 1, 1, 299.90),
+(2, 2, 1, 179.90),
+(3, 3, 1, 129.90),
+(4, 4, 1, 399.90);
+
+
+-- MOVIMENTAÇÕES DE ESTOQUE
+
+INSERT INTO movimentacao_estoque
+(id_produto, motivo, quantidade)
+VALUES
+(1, 'Venda 1', -1),
+(2, 'Venda 2', -1),
+(3, 'Venda 3', -1),
+(4, 'Venda 4', -1);
 
 -- PAGAMENTOS
 

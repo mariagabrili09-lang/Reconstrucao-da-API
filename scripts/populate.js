@@ -4,7 +4,9 @@ const db = createDatabase("info.db");
 
 const count = db.prepare("SELECT COUNT(*) AS total FROM loja").get().total;
 if (count > 0) {
-  console.log("Banco já possui dados. População cancelada para evitar duplicação.");
+  console.log(
+    "Banco já possui dados. População cancelada para evitar duplicação.",
+  );
   process.exit(0);
 }
 
@@ -39,12 +41,12 @@ const insertProduto = db.prepare(`
   INSERT INTO produto (nome, estoque, preco, id_categoria, id_fornecedor)
   VALUES (?, ?, ?, ?, ?)
 `);
-insertProduto.run("Chuteira", 20, 299.90, 1, 1);
-insertProduto.run("Camisa de Futebol", 30, 179.90, 1, 2);
-insertProduto.run("Bola de Futebol", 15, 129.90, 1, 3);
-insertProduto.run("Tênis de Corrida", 10, 399.90, 2, 1);
-insertProduto.run("Corda de Pular", 25, 34.90, 3, 3);
-insertProduto.run("Bola de Vôlei", 12, 199.90, 4, 3);
+insertProduto.run("Chuteira", 20, 299.9, 1, 1);
+insertProduto.run("Camisa de Futebol", 30, 179.9, 1, 2);
+insertProduto.run("Bola de Futebol", 15, 129.9, 1, 3);
+insertProduto.run("Tênis de Corrida", 10, 399.9, 2, 1);
+insertProduto.run("Corda de Pular", 25, 34.9, 3, 3);
+insertProduto.run("Bola de Vôlei", 12, 199.9, 4, 3);
 
 const insertCliente = db.prepare(`
   INSERT INTO cliente (nome, cpf, telefone) VALUES (?, ?, ?)
@@ -56,23 +58,64 @@ insertCliente.run("Beatriz Costa", "77777777777", "88999990007");
 
 const insertVenda = db.prepare(`
   INSERT INTO venda
-  (data, valor_total, id_cliente, id_funcionario, id_produto, id_loja)
-  VALUES (?, ?, ?, ?, ?, ?)
+  (data, valor_total, id_cliente, id_funcionario, id_loja)
+  VALUES (?, ?, ?, ?, ?)
 `);
-insertVenda.run("2026-09-18", 299.90, 1, 1, 1, 1);
-insertVenda.run("2026-09-18", 179.90, 2, 1, 2, 1);
-insertVenda.run("2026-09-19", 129.90, 3, 2, 3, 1);
-insertVenda.run("2026-09-19", 399.90, 4, 3, 4, 2);
+
+const insertItemVenda = db.prepare(`
+  INSERT INTO item_venda
+  (id_venda, id_produto, quantidade, preco_unitario)
+  VALUES (?, ?, ?, ?)
+`);
+
+const atualizarEstoque = db.prepare(`
+  UPDATE produto
+  SET estoque = estoque - ?
+  WHERE id_produto = ? AND estoque >= ?
+`);
+
+const insertMovimentacao = db.prepare(`
+  INSERT INTO movimentacao_estoque
+  (id_produto, motivo, quantidade)
+  VALUES (?, ?, ?)
+`);
+
+const registrarVenda = db.transaction(
+  (data, valor, cliente, funcionario, loja, produto, quantidade, preco) => {
+    const resultado = insertVenda.run(data, valor, cliente, funcionario, loja);
+
+    const idVenda = Number(resultado.lastInsertRowid);
+
+    insertItemVenda.run(idVenda, produto, quantidade, preco);
+
+    const estoqueAtualizado = atualizarEstoque.run(
+      quantidade,
+      produto,
+      quantidade,
+    );
+
+    if (estoqueAtualizado.changes === 0) {
+      throw new Error(`Estoque insuficiente para o produto ${produto}`);
+    }
+
+    insertMovimentacao.run(produto, `Venda ${idVenda}`, -quantidade);
+  },
+);
+
+registrarVenda("2026-09-18", 299.9, 1, 1, 1, 1, 1, 299.9);
+registrarVenda("2026-09-18", 179.9, 2, 1, 1, 2, 1, 179.9);
+registrarVenda("2026-09-19", 129.9, 3, 2, 1, 3, 1, 129.9);
+registrarVenda("2026-09-19", 399.9, 4, 3, 2, 4, 1, 399.9);
 
 const insertPagamento = db.prepare(`
   INSERT INTO pagamento
   (data, forma_pagamento, valor_pagamento, id_venda)
   VALUES (?, ?, ?, ?)
 `);
-insertPagamento.run("2026-09-18", "PIX", 299.90, 1);
-insertPagamento.run("2026-09-18", "Cartão de Crédito", 179.90, 2);
-insertPagamento.run("2026-09-19", "Dinheiro", 129.90, 3);
-insertPagamento.run("2026-09-19", "PIX", 399.90, 4);
+insertPagamento.run("2026-09-18", "PIX", 299.9, 1);
+insertPagamento.run("2026-09-18", "Cartão de Crédito", 179.9, 2);
+insertPagamento.run("2026-09-19", "Dinheiro", 129.9, 3);
+insertPagamento.run("2026-09-19", "PIX", 399.9, 4);
 
 const insertProdutoFornecedor = db.prepare(`
   INSERT INTO produto_fornecedor (id_produto, id_fornecedor) VALUES (?, ?)
@@ -84,7 +127,9 @@ const insertProdutoFornecedor = db.prepare(`
   [3, 3],
   [4, 1],
   [5, 3],
-  [6, 3]
-].forEach(([produto, fornecedor]) => insertProdutoFornecedor.run(produto, fornecedor));
+  [6, 3],
+].forEach(([produto, fornecedor]) =>
+  insertProdutoFornecedor.run(produto, fornecedor),
+);
 
 console.log("Banco populado com sucesso!");
