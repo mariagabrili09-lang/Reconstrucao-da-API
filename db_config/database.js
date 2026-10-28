@@ -62,13 +62,35 @@ const createDatabase = (dbName = "info.db") => {
       valor_total REAL NOT NULL CHECK (valor_total >= 0),
       id_cliente INTEGER NOT NULL,
       id_funcionario INTEGER NOT NULL,
-      id_produto INTEGER NOT NULL,
       id_loja INTEGER NOT NULL,
       FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
       FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario),
-      FOREIGN KEY (id_produto) REFERENCES produto(id_produto),
       FOREIGN KEY (id_loja) REFERENCES loja(id_loja)
     );
+    CREATE TABLE IF NOT EXISTS item_venda (
+    id_item_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_venda INTEGER NOT NULL,
+    id_produto INTEGER NOT NULL,
+    quantidade INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unitario REAL NOT NULL CHECK (preco_unitario >= 0),
+
+    FOREIGN KEY (id_venda)
+        REFERENCES venda(id_venda),
+
+    FOREIGN KEY (id_produto)
+        REFERENCES produto(id_produto)
+);
+
+    CREATE TABLE IF NOT EXISTS movimentacao_estoque (
+    id_movimentacao INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_produto INTEGER NOT NULL,
+    motivo TEXT NOT NULL,
+    quantidade INTEGER NOT NULL CHECK (quantidade <> 0),
+    data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (id_produto)
+        REFERENCES produto(id_produto)
+);
 
     CREATE TABLE IF NOT EXISTS pagamento (
       id_pagamento INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,6 +108,8 @@ const createDatabase = (dbName = "info.db") => {
       FOREIGN KEY (id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE,
       FOREIGN KEY (id_fornecedor) REFERENCES fornecedor(id_fornecedor) ON DELETE CASCADE
     );
+    
+
   `);
 
   return db;

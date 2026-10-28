@@ -6,6 +6,8 @@ SELECT * FROM categoria;
 SELECT * FROM produto;
 SELECT * FROM cliente;
 SELECT * FROM venda;
+SELECT * FROM item_venda;
+SELECT * FROM movimentacao_estoque;
 SELECT * FROM pagamento;
 
 -- WHERE
@@ -45,12 +47,15 @@ SELECT
     c.nome AS cliente,
     f.nome AS funcionario,
     p.nome AS produto,
+    iv.quantidade,
+    iv.preco_unitario,
     l.nome AS loja,
     v.valor_total
 FROM venda v
 JOIN cliente c ON v.id_cliente = c.id_cliente
 JOIN funcionario f ON v.id_funcionario = f.id_funcionario
-JOIN produto p ON v.id_produto = p.id_produto
+JOIN item_venda iv ON v.id_venda = iv.id_venda
+JOIN produto p ON iv.id_produto = p.id_produto
 JOIN loja l ON v.id_loja = l.id_loja;
 
 -- Faturamento

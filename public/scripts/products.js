@@ -242,6 +242,31 @@ async function iniciarPagina() {
       "um fornecedor",
     ),
   ]);
+  
+  async function excluirProduto(id) {
+  if (!confirm('Deseja realmente excluir este produto?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/products/${id}`, {
+      method: 'DELETE'
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.erro || 'Não foi possível excluir o produto.');
+      return;
+    }
+
+    alert(data.mensagem);
+    location.reload();
+  } catch (error) {
+    console.error(error);
+    alert('Erro ao excluir o produto.');
+  }
+}
 
   await carregarProdutos();
 }

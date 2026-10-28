@@ -16,5 +16,7 @@ router.post("/:resource", (req, res, next) => controller(req).create(req, res, n
 router.put("/:resource/:id", (req, res, next) => controller(req).update(req, res, next));
 router.patch("/:resource/:id", (req, res, next) => controller(req).patch(req, res, next));
 router.delete("/:resource/:id", (req, res, next) => controller(req).delete(req, res, next));
+router.delete('/products/:id', controller.excluirProduto);
+
 
 export { router };

@@ -249,4 +249,31 @@ export class ApiController {
       next(error);
     }
   };
+  excluirProduto = (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          erro: 'ID do produto inválido.'
+        });
+      }
+
+      const resultado = this.db.prepare(
+        'DELETE FROM produto WHERE id_produto = ?'
+      ).run(id);
+
+      if (resultado.changes === 0) {
+        return res.status(404).json({
+          erro: 'Produto não encontrado.'
+        });
+      }
+
+      return res.status(200).json({
+        mensagem: 'Produto excluído com sucesso.'
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
