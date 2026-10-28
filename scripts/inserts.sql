@@ -161,3 +161,22 @@ VALUES
 (4, 3),
 (5, 2),
 (6, 3);
+
+INSERT INTO item_venda
+(id_venda, id_produto, quantidade, preco_unitario)
+VALUES
+(1, 1, 1, 299.90),
+(2, 2, 1, 179.90),
+(3, 3, 1, 129.90),
+(4, 4, 1, 399.90);
+
+
+-- MOVIMENTAÇÕES DE ESTOQUE
+
+INSERT INTO movimentacao_estoque
+(id_produto, motivo, quantidade)
+VALUES
+(1, 'Venda 1', -1),
+(2, 'Venda 2', -1),
+(3, 'Venda 3', -1),
+(4, 'Venda 4', -1);
