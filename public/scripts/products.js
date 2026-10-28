@@ -113,7 +113,13 @@ async function carregarProdutos() {
       editar.textContent = "Editar";
       editar.addEventListener("click", () => editarProduto(produto.id));
 
-      botoes.append(detalhes, editar);
+      const excluir = document.createElement("button");
+      excluir.type = "button";
+      excluir.className = "btn btn-danger";
+      excluir.textContent = "Excluir";
+      excluir.addEventListener("click", () => excluirProduto(produto.id));
+
+      botoes.append(detalhes, editar, excluir);
       corpo.append(nome, categoria, fornecedor, estoque, preco, botoes);
       card.appendChild(corpo);
       coluna.appendChild(card);
@@ -225,6 +231,23 @@ formulario.addEventListener("submit", async (evento) => {
   }
 });
 
+async function excluirProduto(id) {
+  if (!confirm("Deseja realmente excluir este produto?")) {
+    return;
+  }
+
+  try {
+    await requisicao(`/api/products/${id}`, {
+      method: "DELETE",
+    });
+
+    mostrarMensagem("Produto excluído com sucesso!");
+    await carregarProdutos();
+  } catch (erro) {
+    mostrarMensagem(erro.message, "danger");
+  }
+}
+
 async function iniciarPagina() {
   await Promise.all([
     carregarOpcoes(
@@ -242,31 +265,6 @@ async function iniciarPagina() {
       "um fornecedor",
     ),
   ]);
-  
-  async function excluirProduto(id) {
-  if (!confirm('Deseja realmente excluir este produto?')) {
-    return;
-  }
-
-  try {
-    const response = await fetch(`/api/products/${id}`, {
-      method: 'DELETE'
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.erro || 'Não foi possível excluir o produto.');
-      return;
-    }
-
-    alert(data.mensagem);
-    location.reload();
-  } catch (error) {
-    console.error(error);
-    alert('Erro ao excluir o produto.');
-  }
-}
 
   await carregarProdutos();
 }
